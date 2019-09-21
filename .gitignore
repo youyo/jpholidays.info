@@ -1,0 +1,7 @@
+.envrc
+.direnv/
+.mypy_cache/
+__*
+cdk.out/
+tmp*
+function/.artifact/
