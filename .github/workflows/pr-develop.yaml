@@ -23,7 +23,7 @@ jobs:
         run: |
           make build
       - name: Diff
-        use: youyo/aws-cdk-github-actions/diff@master
+        uses: youyo/aws-cdk-github-actions/diff@master
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
