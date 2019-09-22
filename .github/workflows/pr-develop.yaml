@@ -1,12 +1,12 @@
-name: Deploy develop
+name: Show diff develop
 
 on:
-  push:
+  pull_request:
     branches:
       - develop
 
 jobs:
-  deploy:
+  diff:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -16,7 +16,7 @@ jobs:
       - name: Build lambda code
         run: |
           make build
-      - uses: youyo/aws-cdk-github-actions/deploy@master
+      - uses: youyo/aws-cdk-github-actions/diff@master
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

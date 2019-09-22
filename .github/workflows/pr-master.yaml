@@ -1,30 +1,26 @@
-name: Deploy
+name: Show diff master
 
 on:
-  push:
+  pull_request:
     branches:
       - master
 
 jobs:
-  deploy:
+  diff:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-python@v1
         with:
           python-version: 3
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12
-      - name: Install dependencies
+      - name: Build lambda code
         run: |
-          pip install -r requirements.txt
-      - name: Deploy
+          make build
+      - uses: youyo/aws-cdk-github-actions/diff@master
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
           STAGE: latest
-        run: |
-          make build
-          make deploy
+          DOMAIN: jpholidays.info
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

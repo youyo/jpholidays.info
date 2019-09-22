@@ -25,9 +25,9 @@ input TableHolidayFilterInput {
 input TableAWSDateFilterInput {
 	ne: AWSDate
 	eq: AWSDate
-	contains: AWSDate
-	notContains: AWSDate
-	beginsWith: AWSDate
+	contains: String
+	notContains: String
+	beginsWith: String
 	between: [AWSDate]
 }
 
