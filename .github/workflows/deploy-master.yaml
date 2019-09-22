@@ -13,6 +13,9 @@ jobs:
       - uses: actions/setup-python@v1
         with:
           python-version: 3
+      - name: Build lambda code
+        run: |
+          make build
       - uses: youyo/aws-cdk-github-actions/deploy@master
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
