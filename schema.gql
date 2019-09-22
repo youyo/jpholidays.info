@@ -1,0 +1,40 @@
+schema {
+  query: Query
+}
+
+type holiday {
+	date: AWSDate!
+	name: String!
+}
+
+type holidayConnection {
+	items: [holiday]
+	nextToken: String
+}
+
+type Query {
+	getHoliday(date: AWSDate!): holiday
+	listHolidays(filter: TableHolidayFilterInput, limit: Int, nextToken: String): holidayConnection
+}
+
+input TableHolidayFilterInput {
+	date: TableAWSDateFilterInput
+	name: TableStringFilterInput
+}
+
+input TableAWSDateFilterInput {
+	ne: AWSDate
+	eq: AWSDate
+	contains: AWSDate
+	notContains: AWSDate
+	beginsWith: AWSDate
+	between: [AWSDate]
+}
+
+input TableStringFilterInput {
+	ne: String
+	eq: String
+	contains: String
+	notContains: String
+	beginsWith: String
+}
