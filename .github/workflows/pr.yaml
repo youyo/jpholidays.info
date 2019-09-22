@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - master
+      - develop
 
 jobs:
   diff:
@@ -13,14 +14,24 @@ jobs:
       - uses: actions/setup-python@v1
         with:
           python-version: 3
-      - name: Build
+      - name: Build lambda code
         run: |
           make build
       - uses: youyo/aws-cdk-github-actions/diff@master
+        if: github.base_ref == 'master'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
           STAGE: latest
           DOMAIN: jpholidays.info
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: youyo/aws-cdk-github-actions/diff@master
+        if: github.base_ref == 'develop'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
+          STAGE: develop
+          DOMAIN: develop.jpholidays.info
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
