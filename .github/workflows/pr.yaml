@@ -13,13 +13,10 @@ jobs:
       - uses: actions/setup-python@v1
         with:
           python-version: 3
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12
-      - name: Install dependencies
+      - name: Build
         run: |
-          pip install -r requirements.txt
-      - name: Diff
+          make build
+      - uses: youyo/aws-cdk-github-actions/diff@master
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -27,11 +24,3 @@ jobs:
           STAGE: latest
           DOMAIN: jpholidays.info
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          make build
-          OUTPUT=$(sh -c "npx cdk diff" 2>&1 ; true)
-          echo "${OUTPUT}"
-          COMMENT="#### \`terraform plan\`\n${OUTPUT}\n\n*Workflow: \`${GITHUB_WORKFLOW}\`, Action: \`${GITHUB_ACTION}\`*"
-          PAYLOAD=$(echo '{}' | jq --arg body "${COMMENT}" '.body = $body')
-          COMMENTS_URL=$(cat ${GITHUB_EVENT_PATH} | jq -r .pull_request.comments_url)
-          curl -s -S -H "Authorization: token ${GITHUB_TOKEN}" --header "Content-Type: application/json" --data "${PAYLOAD}" "${COMMENTS_URL}" > /dev/null
