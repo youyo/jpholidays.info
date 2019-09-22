@@ -1,9 +1,8 @@
-name: Show diff
+name: Show diff develop
 
 on:
   pull_request:
     branches:
-      - master
       - develop
 
 jobs:
@@ -17,19 +16,7 @@ jobs:
       - name: Build lambda code
         run: |
           make build
-      - name: Run cdk diff @master
-        uses: youyo/aws-cdk-github-actions/diff@master
-        if: github.base_ref == 'master'
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
-          STAGE: latest
-          DOMAIN: jpholidays.info
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Run cdk diff @develop
-        uses: youyo/aws-cdk-github-actions/diff@master
-        if: github.base_ref == 'develop'
+      - uses: youyo/aws-cdk-github-actions/diff@master
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
