@@ -1,12 +1,12 @@
-name: Deploy
+name: Show diff
 
 on:
-  push:
+  pull_request:
     branches:
       - master
 
 jobs:
-  deploy:
+  diff:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -19,7 +19,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-      - name: Deploy
+      - name: Diff
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -28,4 +28,10 @@ jobs:
           DOMAIN: jpholidays.info
         run: |
           make build
-          make deploy
+          OUTPUT=$(sh -c "npx cdk diff" 2>&1 ; true)
+          echo "${OUTPUT}"
+          COMMENT="#### \`terraform plan\`\n${OUTPUT}\n\n*Workflow: \`${GITHUB_WORKFLOW}\`, Action: \`${GITHUB_ACTION}\`*"
+          PAYLOAD=$(echo '{}' | jq --arg body "${COMMENT}" '.body = $body')
+          COMMENTS_URL=$(cat ${GITHUB_EVENT_PATH} | jq -r .pull_request.comments_url)
+          curl -s -S -H "Authorization: token ${GITHUB_TOKEN}" --header "Content-Type: application/json" --data "${PAYLOAD}" "${COMMENTS_URL}" > /dev/null
+
