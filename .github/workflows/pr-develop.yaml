@@ -13,17 +13,10 @@ jobs:
       - uses: actions/setup-python@v1
         with:
           python-version: 3
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
       - name: Build
         run: |
           make build
-      - name: Diff
-        uses: youyo/aws-cdk-github-actions/diff@master
+      - uses: youyo/aws-cdk-github-actions/diff@master
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
