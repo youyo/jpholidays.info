@@ -13,19 +13,11 @@ jobs:
       - uses: actions/setup-python@v1
         with:
           python-version: 3
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-      - name: Deploy
+      - uses: youyo/aws-cdk-github-actions/deploy@master
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
           STAGE: develop
           DOMAIN: develop.jpholidays.info
-        run: |
-          make build
-          make deploy
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
